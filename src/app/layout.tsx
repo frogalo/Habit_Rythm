@@ -1,20 +1,19 @@
-import "../../src/app/styles/globals.css";
+import "../styles/globals.css";
 import React from "react";
 import SessionProviderWrapper from "./providers/SessionProviderWrapper";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
-export default function RootLayout({
-                                       children,
-                                   }: {
-    children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-        <body>
+        <body className="h-screen overflow-hidden">
         <SessionProviderWrapper>
-            <header>
-                <h1>Habit Rhythm</h1>
-            </header>
-            <main>{children}</main>
+            <div className="flex flex-col h-screen">
+                <Header />
+                <main className="flex-1 flex flex-col min-h-0">{children}</main>
+                <Footer />
+            </div>
         </SessionProviderWrapper>
         </body>
         </html>
