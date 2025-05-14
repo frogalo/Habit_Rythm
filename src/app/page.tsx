@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle, TrendingUp, CalendarCheck, UserCheck } from "lucide-react";
+import { CheckCircle, TrendingUp, CalendarCheck, UserCheck, CirclePlay } from "lucide-react";
 import Button from "@/app/components/buttons/Button";
-import {CirclePlay} from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const features = [
     {
@@ -33,6 +33,8 @@ const features = [
 ];
 
 export default function HomePage() {
+    const router = useRouter();
+
     return (
         <main className="flex flex-col bg-[var(--background)] text-[var(--foreground)]">
             {/* Hero Section */}
@@ -69,6 +71,7 @@ export default function HomePage() {
                     <Button
                         icon={CirclePlay}
                         text="Start Now"
+                        onClick={() => router.push("/login")}
                     />
                 </motion.div>
             </section>
@@ -79,7 +82,7 @@ export default function HomePage() {
                     {features.map((feature, idx) => (
                         <motion.div
                             key={feature.title}
-                            className="flex items-start space-x-4 "
+                            className="flex items-start space-x-4"
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.3 }}

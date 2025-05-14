@@ -1,8 +1,7 @@
 "use client";
 
 import {useSession, signIn} from "next-auth/react";
-import HabitList from "../components/habits/HabitList";
-import HabitForm from "../components/habits/HabitForm";
+
 
 export default function HabitsPage() {
     const {data: session, status} = useSession();
@@ -18,9 +17,7 @@ export default function HabitsPage() {
 
     return (
         <div>
-            <h2>Your Habits</h2>
-            <HabitForm/>
-            <HabitList/>
+
         </div>
     );
 }

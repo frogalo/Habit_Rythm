@@ -2,21 +2,23 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import {useSession, signOut} from "next-auth/react";
-import {LogOut, LogIn} from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { LogOut, LogIn } from "lucide-react";
 import Button from "@/app/components/buttons/Button";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Header() {
-    const {data: session, status} = useSession();
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const pathname = usePathname();
 
     return (
-        <header
-            className="w-full bg-[var(--background)]/80 backdrop-blur sticky top-0 z-30 border-b border-[var(--accent)]">
+        <header className="w-full bg-[var(--secondary)]/80 backdrop-blur sticky top-0 z-30 border-b border-[var(--accent)]">
             <nav className="mx-auto flex items-center justify-between px-6 h-16">
                 <Link
                     href="/"
                     className="flex items-center gap-3 text-2xl font-bold text-[var(--purple)]"
-                    style={{fontFamily: "var(--font-main)"}}
+                    style={{ fontFamily: "var(--font-main)" }}
                 >
           <span>
             <Image
@@ -35,30 +37,28 @@ export default function Header() {
                         <>
               <span
                   className="text-[var(--dark)] font-medium"
-                  style={{fontFamily: "var(--font-main)"}}
+                  style={{ fontFamily: "var(--font-main)" }}
               >
                 {session.user?.email}
               </span>
                             <Link href="/habits" className="inline-block">
-                                <Button
-                                    text="Tracker"
-                                />
+                                <Button text="Tracker" />
                             </Link>
                             <Button
                                 text="Sign out"
                                 icon={LogOut}
-                                onClick={() => signOut()}
+                                onClick={() => signOut({ callbackUrl: "/login" })}
                             />
-
                         </>
                     ) : (
                         <>
-                            <Link href="/login" className="inline-block">
+                            {pathname !== "/login" && (
                                 <Button
                                     text="Login"
                                     icon={LogIn}
+                                    onClick={() => router.push("/login")}
                                 />
-                            </Link>
+                            )}
                         </>
                     )}
                 </div>
