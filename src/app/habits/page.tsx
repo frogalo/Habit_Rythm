@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import {
     eachDayOfInterval,
     startOfMonth,
@@ -16,7 +16,7 @@ const initialHabits = [
         id: "1",
         name: "Drink Water",
         color: "#f205de",
-        completions: ["2025-05-15", "2025-05-16", "2025-06-01"],
+        completions: ["2025-05-15", "2025-05-12", "2025-05-11", "2025-05-16", "2025-06-01", "2025-02-01", "2025-03-01", "2025-04-01", "2025-05-01", "2025-06-01"],
     },
     {
         id: "2",
@@ -32,7 +32,7 @@ const initialHabits = [
     },
     {
         id: "4",
-        name: "Think",
+        name: "Dance",
         color: "#1d199b",
         completions: ["2025-04-14"],
     },
@@ -48,8 +48,9 @@ function getContrastTextColor(hex: string) {
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.6 ? "text-black" : "text-white";
+    return luminance > 0.6 ? "#000" : "#fff";
 }
+
 
 // Helper to get unique months with completions for a habit
 function getCompletedMonths(completions: string[]) {
@@ -80,7 +81,7 @@ export default function MultiHabitDotCalendar() {
     };
 
     return (
-        <div className="flex flex-col gap-8 justify-center m-3">
+        <div className="flex flex-col gap-2 justify-center m-3">
             {habitStates.map((habit) => {
                 // Get all months with completions for this habit
                 const completedMonths = getCompletedMonths(habit.completions);
@@ -92,29 +93,43 @@ export default function MultiHabitDotCalendar() {
                 return (
                     <div
                         key={habit.id}
-                        className="flex flex-row items-start w-full bg-white/80 rounded-lg shadow p-4 mt-2"
+                        className="flex flex-row items-start w-full bg-white/80 rounded-lg shadow-2xl p-4 mt-2"
                     >
                         {/* Left: Habit name */}
-                        <div className="flex flex-col items-start min-w-[160px] mr-6">
-                            <h2 className="mb-2 font-bold text-md" style={{ color: habit.color }}>
-                                {habit.name}
-                            </h2>
+                        <div className="flex flex-col items-start min-w-[40px] mr-6">
+                            <span
+                                className="mb-2 font-bold text-md px-2 py-1 rounded border"
+                                style={{
+                                    writingMode: "vertical-rl",
+                                    transform: "rotate(180deg)",
+                                    background: habit.color,
+                                    borderColor: habit.color,
+                                    color: getContrastTextColor(habit.color), // <-- use as style, not className
+                                    fontFamily: "var(--font-main)",
+                                    textAlign: "center",
+                                    minHeight: "120px",
+                                    display: "inline-block",
+                                }}
+                            >
+                                 {habit.name}
+                            </span>
                         </div>
                         {/* Right: All calendars for months with completions or current month */}
-                        <div className="flex flex-row gap-6">
-                            {monthsToShow.map((monthStr) => {
-                                // Get all days in this month
-                                const monthDate = parseISO(monthStr + "-01");
-                                const days = eachDayOfInterval({
-                                    start: startOfMonth(monthDate),
-                                    end: endOfMonth(monthDate),
-                                });
+                        <div className="flex-1 overflow-x-auto">
+                            <div className="flex flex-row gap-6 min-w-[380px]">
+                                {monthsToShow.map((monthStr) => {
+                                    // Get all days in this month
+                                    const monthDate = parseISO(monthStr + "-01");
+                                    const days = eachDayOfInterval({
+                                        start: startOfMonth(monthDate),
+                                        end: endOfMonth(monthDate),
+                                    });
 
-                                return (
-                                    <div
-                                        key={monthStr}
-                                        className="flex flex-col items-center w-[380px] bg-white rounded-lg shadow p-3"
-                                    >
+                                    return (
+                                        <div
+                                            key={monthStr}
+                                            className="flex flex-col items-center min-w-[380px] w-[380px] bg-white rounded-lg shadow p-3"
+                                        >
                     <span
                         className="font-bold text-sm px-3 py-1 mb-2 rounded border"
                         style={{
@@ -125,58 +140,60 @@ export default function MultiHabitDotCalendar() {
                     >
                       {format(monthDate, "MMMM yyyy")}
                     </span>
-                                        {/* Weekday Labels */}
-                                        <div className="grid grid-cols-7 gap-2 mb-1 text-xs text-center text-gray-400 w-full">
-                                            {WEEKDAYS.map((d, i) => (
-                                                <span key={`${habit.id}-${monthStr}-weekday-${i}`}>{d}</span>
-                                            ))}
+                                            {/* Weekday Labels */}
+                                            <div
+                                                className="grid grid-cols-7 gap-2 mb-1 text-xs text-center text-gray-400 w-full">
+                                                {WEEKDAYS.map((d, i) => (
+                                                    <span key={`${habit.id}-${monthStr}-weekday-${i}`}>{d}</span>
+                                                ))}
+                                            </div>
+                                            {/* Dot Calendar */}
+                                            <div className="grid grid-cols-7 gap-2 w-full">
+                                                {days.map((day) => {
+                                                    const dateStr = format(day, "yyyy-MM-dd");
+                                                    const completed = habit.completions.includes(dateStr);
+                                                    const isCurrentDay = isToday(day);
+                                                    const isPast = isBefore(day, new Date()) && !isCurrentDay;
+
+                                                    // Number color logic
+                                                    let numberColor = "text-[var(--dark)]";
+                                                    if (completed) numberColor = getContrastTextColor(habit.color);
+                                                    else if (isPast) numberColor = "text-gray-400";
+                                                    if (isCurrentDay && !completed) numberColor = "text-[var(--pink)]";
+
+                                                    // Style for today: pill shape, bolder border
+                                                    const baseCircle =
+                                                        "flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2";
+                                                    const circleSize = isCurrentDay
+                                                        ? "w-12 h-7 rounded-full border-2"
+                                                        : "w-7 h-7 rounded-full border-2";
+                                                    const completedStyle = completed
+                                                        ? "shadow-lg"
+                                                        : "border-gray-300 bg-white hover:bg-[var(--secondary)]";
+                                                    const ringStyle = isCurrentDay
+                                                        ? "focus:ring-[var(--yellow)]"
+                                                        : "focus:ring-[var(--secondary)]";
+
+                                                    return (
+                                                        <button
+                                                            key={dateStr}
+                                                            onClick={() => handleToggle(habit.id, day)}
+                                                            className={`${baseCircle} ${circleSize} ${completedStyle} ${ringStyle}`}
+                                                            style={{
+                                                                borderColor: completed ? habit.color : undefined,
+                                                                background: completed ? habit.color : undefined,
+                                                            }}
+                                                            title={dateStr}
+                                                        >
+                                                            <span className={numberColor}>{day.getDate()}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
-                                        {/* Dot Calendar */}
-                                        <div className="grid grid-cols-7 gap-2 w-full">
-                                            {days.map((day) => {
-                                                const dateStr = format(day, "yyyy-MM-dd");
-                                                const completed = habit.completions.includes(dateStr);
-                                                const isCurrentDay = isToday(day);
-                                                const isPast = isBefore(day, new Date()) && !isCurrentDay;
-
-                                                // Number color logic
-                                                let numberColor = "text-[var(--dark)]";
-                                                if (completed) numberColor = getContrastTextColor(habit.color);
-                                                else if (isPast) numberColor = "text-gray-400";
-                                                if (isCurrentDay && !completed) numberColor = "text-[var(--pink)]";
-
-                                                // Style for today: pill shape, bolder border
-                                                const baseCircle =
-                                                    "flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2";
-                                                const circleSize = isCurrentDay
-                                                    ? "w-12 h-7 rounded-full border-2"
-                                                    : "w-7 h-7 rounded-full border-2";
-                                                const completedStyle = completed
-                                                    ? "shadow-lg"
-                                                    : "border-gray-300 bg-white hover:bg-[var(--secondary)]";
-                                                const ringStyle = isCurrentDay
-                                                    ? "focus:ring-[var(--yellow)]"
-                                                    : "focus:ring-[var(--secondary)]";
-
-                                                return (
-                                                    <button
-                                                        key={dateStr}
-                                                        onClick={() => handleToggle(habit.id, day)}
-                                                        className={`${baseCircle} ${circleSize} ${completedStyle} ${ringStyle}`}
-                                                        style={{
-                                                            borderColor: completed ? habit.color : undefined,
-                                                            background: completed ? habit.color : undefined,
-                                                        }}
-                                                        title={dateStr}
-                                                    >
-                                                        <span className={numberColor}>{day.getDate()}</span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 );
