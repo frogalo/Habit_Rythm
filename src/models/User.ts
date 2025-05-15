@@ -33,7 +33,7 @@ const HabitSchema = new Schema<IHabit>({
     name: { type: String, required: true },
     color: { type: String, required: true },
     completions: [{ type: String, match: /^\d{4}-\d{2}-\d{2}$/ }], // YYYY-MM-DD
-}, { _id: true }); // auto _id for each habit
+}, { _id: true });
 
 const UserSchema = new Schema<IUser>({
     name: { type: String },

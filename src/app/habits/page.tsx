@@ -1,58 +1,15 @@
 "use client";
 
-import {useState} from "react";
-import {
-    format,
-    parseISO,
-} from "date-fns";
+import { useEffect, useState } from "react";
+import { format, parseISO } from "date-fns";
 import HabitModal from "@/app/components/habits/HabitModal";
 import HabitSidebar from "@/app/components/habits/HabitSidebar";
 import HabitCalendar from "@/app/components/habits/HabitCalendar";
 import Button from "@/app/components/buttons/Button";
-import {Plus} from "lucide-react";
-
-
-const initialHabits = [
-    {
-        id: "1",
-        name: "Drink Water",
-        color: "#f205de",
-        completions: [
-            "2025-05-15",
-            "2025-05-12",
-            "2025-05-11",
-            "2025-05-16",
-            "2025-06-01",
-            "2025-02-01",
-            "2025-03-01",
-            "2025-04-01",
-            "2025-05-01",
-            "2025-06-01",
-        ],
-    },
-    {
-        id: "2",
-        name: "Read Book",
-        color: "#05f2d6",
-        completions: ["2025-05-14", "2025-06-10"],
-    },
-    {
-        id: "3",
-        name: "Think",
-        color: "#399b19",
-        completions: ["2025-04-14", "2025-05-15"],
-    },
-    {
-        id: "4",
-        name: "Dance",
-        color: "#1d199b",
-        completions: ["2025-04-14"],
-    },
-];
+import { Plus } from "lucide-react";
 
 // Monday-first weekday labels
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
 
 // Helper to get unique months with completions for a habit
 function getCompletedMonths(completions: string[]) {
@@ -63,12 +20,65 @@ function getCompletedMonths(completions: string[]) {
     return Array.from(new Set(months)).sort();
 }
 
+type Habit = {
+    _id: string;
+    id: string;
+    name: string;
+    color: string;
+    completions: string[];
+};
+
 export default function MultiHabitDotCalendar() {
-    const [habitStates, setHabitStates] = useState(initialHabits);
+    const [habitStates, setHabitStates] = useState<Habit[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
-    const [editingHabit, setEditingHabit] = useState<null | typeof initialHabits[0]>(null);
+    const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
 
+    // Fetch habits from API on mount
+    useEffect(() => {
+        (async () => {
+            const res = await fetch("/api/habits");
+            if (res.ok) {
+                const data = await res.json();
+                setHabitStates(
+                    data.habits.map((h: any) => ({
+                        ...h,
+                        _id: typeof h._id === "string" ? h._id : h._id.toString(),
+                        id: typeof h._id === "string" ? h._id : h._id.toString(),
+                    }))
+                );
+            }
+        })();
+    }, []);
 
+    // Add a new habit via API
+    const handleAddHabit = async (habit: { name: string; color: string }) => {
+        const res = await fetch("/api/habits", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(habit),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            setHabitStates(
+                data.habits.map((h: any) => ({
+                    ...h,
+                    _id: typeof h._id === "string" ? h._id : h._id.toString(),
+                    id: typeof h._id === "string" ? h._id : h._id.toString(),
+                }))
+            );
+        } else {
+            const error = await res.json();
+            alert(error.error || "Failed to add habit");
+        }
+    };
+
+    // Remove a habit (local only, for now)
+    const handleRemoveHabit = (habitId: string) => {
+        setHabitStates((prev) => prev.filter((h) => h.id !== habitId));
+    };
+
+    // Toggle completion for a date (local only, for now)
     const handleToggle = (habitId: string, date: Date) => {
         const dateStr = format(date, "yyyy-MM-dd");
         setHabitStates((prev) =>
@@ -99,9 +109,16 @@ export default function MultiHabitDotCalendar() {
             />
             <HabitModal
                 open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onSave={habit => {
-                    // handle save (add or edit)
+                onClose={() => {
+                    setModalOpen(false);
+                    setEditingHabit(null);
+                }}
+                onSave={async (habit) => {
+                    if (editingHabit) {
+                        // handleEditHabit(habit); // (implement edit via API if needed)
+                    } else {
+                        await handleAddHabit(habit);
+                    }
                     setModalOpen(false);
                     setEditingHabit(null);
                 }}
@@ -110,7 +127,6 @@ export default function MultiHabitDotCalendar() {
                 isEditing={!!editingHabit}
             />
             {habitStates.map((habit) => {
-                // Get all months with completions for this habit
                 const completedMonths = getCompletedMonths(habit.completions);
                 const currentMonthStr = format(new Date(), "yyyy-MM");
                 const monthsToShow = completedMonths.includes(currentMonthStr)
@@ -127,9 +143,8 @@ export default function MultiHabitDotCalendar() {
                             onEdit={() => {
                                 setEditingHabit(habit);
                                 setModalOpen(true);
-                                // Optionally add onEdit/onRemove handlers here
-
                             }}
+                            onRemove={() => handleRemoveHabit(habit.id)}
                         />
                         <HabitCalendar
                             habit={habit}

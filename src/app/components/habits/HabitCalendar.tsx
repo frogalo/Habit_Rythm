@@ -71,7 +71,7 @@ export default function HabitCalendar({
                             <div className="grid grid-cols-7 gap-2 w-full">
                                 {paddedDays.map((day, idx) => {
                                     if (!day) {
-                                        return <span key={`empty-${idx}`} />;
+                                        return <span key={`empty-${habit.id}-${monthStr}-${idx}`} />;
                                     }
                                     const dateStr = format(day, "yyyy-MM-dd");
                                     const completed = habit.completions.includes(dateStr);
