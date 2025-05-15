@@ -52,7 +52,7 @@ const initialHabits = [
 ];
 
 // Monday-first weekday labels
-const WEEKDAYS = ["M", "T", "W", "T", "F", "S", "S"];
+const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 // Helper to get black or white text for contrast
 function getContrastTextColor(hex: string) {
@@ -62,7 +62,7 @@ function getContrastTextColor(hex: string) {
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.6 ? "#000" : "#fff";
+    return luminance > 0.6 ? "#232222" : "#d9d9d9";
 }
 
 // Helper to get unique months with completions for a habit
@@ -106,10 +106,10 @@ export default function MultiHabitDotCalendar() {
                 return (
                     <div
                         key={habit.id}
-                        className="flex flex-row items-start w-full bg-white/80 rounded-lg shadow-2xl p-4 mt-2"
+                        className="flex flex-row items-stretch w-full bg-white/80 rounded-lg shadow-2xl p-4 mt-2"
                     >
                         {/* Left: Habit name and buttons */}
-                        <div className="flex flex-col items-center min-w-[40px] mt-3 mr-6 h-[230px] justify-between">
+                        <div className="flex flex-col items-center min-w-[40px] mt-3 mr-6 h-[330px] justify-between">
                               <span
                                   className="font-bold text-md px-2 py-1 rounded border"
                                   style={{
@@ -129,11 +129,14 @@ export default function MultiHabitDotCalendar() {
                             <div className="flex flex-col items-center gap-2">
                                 <button
                                     type="button"
-                                    className="p-1 rounded border"
+                                    className="rounded border flex items-center justify-center"
                                     style={{
                                         background: habit.color,
                                         borderColor: habit.color,
                                         color: getContrastTextColor(habit.color),
+                                        cursor: "pointer",
+                                        width:"34px",
+                                        height: "34px",
                                     }}
                                     title="Edit habit"
                                     // onClick={() => handleEdit(habit.id)}
@@ -142,11 +145,14 @@ export default function MultiHabitDotCalendar() {
                                 </button>
                                 <button
                                     type="button"
-                                    className="p-1 rounded border"
+                                    className="rounded border flex items-center justify-center"
                                     style={{
                                         background: habit.color,
                                         borderColor: habit.color,
                                         color: getContrastTextColor(habit.color),
+                                        cursor: "pointer",
+                                        height: "34px",
+                                        width:"34px"
                                     }}
                                     title="Remove habit"
                                     // onClick={() => handleRemove(habit.id)}
@@ -179,10 +185,10 @@ export default function MultiHabitDotCalendar() {
                                     return (
                                         <div
                                             key={monthStr}
-                                            className="flex flex-col items-center min-w-[380px] w-[380px] bg-white rounded-lg shadow p-3"
+                                            className="flex flex-col min-w-[380px] w-[380px] rounded-lg p-3 h-full"
                                         >
                                           <span
-                                              className="font-bold text-sm px-3 py-1 mb-2 rounded"
+                                              className="font-bold text-sm px-3 py-1 mb-2 rounded w-fit"
                                               style={{
                                                   background: "var(--secondary)",
                                                   color: "var(--foreground)",
@@ -223,9 +229,6 @@ export default function MultiHabitDotCalendar() {
                                                     // Style for today: pill shape, bolder border
                                                     const baseCircle =
                                                         "flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2";
-                                                    const circleSize = isCurrentDay
-                                                        ? "w-12 h-7 rounded-full border-2"
-                                                        : "w-7 h-7 rounded-full border-2";
                                                     const completedStyle = completed
                                                         ? "shadow-lg"
                                                         : "border-gray-300 bg-white hover:bg-[var(--secondary)]";
@@ -237,17 +240,37 @@ export default function MultiHabitDotCalendar() {
                                                         <button
                                                             key={dateStr}
                                                             onClick={() => handleToggle(habit.id, day)}
-                                                            className={`${baseCircle} ${circleSize} ${completedStyle} ${ringStyle} mx-auto`}
+                                                            className={`
+                                                                ${baseCircle}
+                                                                w-12 h-12
+                                                                rounded-lg
+                                                                border-2
+                                                                ${completedStyle}
+                                                                ${ringStyle}
+                                                                mx-auto
+                                                                relative
+                                                              `}
                                                             style={{
                                                                 borderColor: completed ? habit.color : undefined,
                                                                 background: completed ? habit.color : undefined,
-                                                                minWidth: isCurrentDay ? "48px" : undefined, // or "44px" for a tighter pill
+                                                                cursor: "pointer",
                                                             }}
                                                             title={dateStr}
                                                         >
-  <span style={numberColorStyle} className={numberColorClass}>
-    {day.getDate()}
-  </span>
+                                                          <span
+                                                              style={numberColorStyle}
+                                                              className={`
+                                                              ${numberColorClass}
+                                                              text-xs
+                                                              absolute
+                                                              bottom-1
+                                                              right-1
+                                                              font-semibold
+                                                              pointer-events-none
+                                                            `}
+                                                          >
+                                                            {day.getDate()}
+                                                          </span>
                                                         </button>
                                                     );
                                                 })}
