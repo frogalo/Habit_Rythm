@@ -1,4 +1,11 @@
-import { Schema, Document, models, model } from "mongoose";
+import { Schema, Document, models, model, Types } from "mongoose";
+
+export interface IHabit {
+    _id: Types.ObjectId;
+    name: string;
+    color: string;
+    completions: string[]; // ["2025-05-15", ...]
+}
 
 export interface IUser extends Document {
     name?: string;
@@ -15,10 +22,18 @@ export interface IUser extends Document {
     login?: string;
     githubId?: string;
     githubProfile?: unknown;
+    // Habits
+    habits: IHabit[];
     // General
     createdAt: Date;
     updatedAt: Date;
 }
+
+const HabitSchema = new Schema<IHabit>({
+    name: { type: String, required: true },
+    color: { type: String, required: true },
+    completions: [{ type: String, match: /^\d{4}-\d{2}-\d{2}$/ }], // YYYY-MM-DD
+}, { _id: true }); // auto _id for each habit
 
 const UserSchema = new Schema<IUser>({
     name: { type: String },
@@ -35,6 +50,8 @@ const UserSchema = new Schema<IUser>({
     login: { type: String },
     githubId: { type: String },
     githubProfile: { type: Schema.Types.Mixed },
+    // Habits
+    habits: { type: [HabitSchema], default: [] },
     // General
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

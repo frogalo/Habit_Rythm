@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { LucideIcon } from "lucide-react";
+import type {LucideIcon} from "lucide-react";
 
 type ButtonProps = {
     text: string;
@@ -26,14 +26,13 @@ export default function Button({
             onClick={onClick}
             disabled={disabled}
             className={`
-        flex items-center gap-2 px-5 py-2 rounded-lg font-semibold shadow transition
-        bg-[var(--purple)] hover:bg-[var(--pink)] text-[var(--foreground)]
-        disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer
-        ${className}
-      `}
-
+                        flex items-center gap-2 px-5 py-2 rounded-lg font-semibold shadow transition
+                        bg-[var(--purple)] hover:bg-[var(--pink)] text-[var(--foreground)]
+                        disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer
+                        ${className}
+                      `}
         >
-            {Icon && <Icon size={20} />}
+            {Icon && <Icon size={20}/>}
             {text}
         </button>
     );
