@@ -1,58 +1,68 @@
-import {NextRequest, NextResponse} from "next/server";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/pages/api/auth/[...nextauth]";
-import {dbConnect} from "@/lib/mongoose";
-import User, {IHabit} from "@/models/User";
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { dbConnect } from "@/lib/mongoose";
+import { IHabit } from "@/models/User";
+import { getUserFromSession } from "@/lib/getUserBySession";
 
-// PATCH: Edit a habit (name/color)
-export async function PATCH(req: NextRequest, {params}: { params: { habitId: string } }) {
+// PATCH: Edit a habit (name/color) or toggle completion
+export async function PATCH(
+    req: NextRequest,
+    { params }: { params: Promise<{ habitId: string }> }
+) {
+    const { habitId } = await params;
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
-        return NextResponse.json({error: "Unauthorized"}, {status: 401});
-    }
+    const { user, response } = await getUserFromSession(session);
+    if (!user) return response!;
 
-    const {name, color} = await req.json();
-    if (!name || !color) {
-        return NextResponse.json({error: "Name and color are required"}, {status: 400});
-    }
+    const { date, name, color } = await req.json();
 
-    const user = await User.findOne({email: session.user.email});
-    if (!user) {
-        return NextResponse.json({error: "User not found"}, {status: 404});
-    }
-
-    const habit = user.habits.id(params.habitId);
+    const habit = user.habits.id(habitId);
     if (!habit) {
-        return NextResponse.json({error: "Habit not found"}, {status: 404});
+        return NextResponse.json({ error: "Habit not found" }, { status: 404 });
     }
 
-    habit.name = name;
-    habit.color = color;
-    await user.save();
+    // Toggle completion
+    if (date) {
+        const idx = habit.completions.indexOf(date);
+        if (idx === -1) {
+            habit.completions.push(date);
+        } else {
+            habit.completions.splice(idx, 1);
+        }
+        await user.save();
+        return NextResponse.json({ completions: habit.completions });
+    }
 
-    return NextResponse.json({habits: user.habits});
+    // Edit name/color
+    if (name && color) {
+        habit.name = name;
+        habit.color = color;
+        await user.save();
+        return NextResponse.json({ habits: user.habits });
+    }
+
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 }
 
 // DELETE: Remove a habit
-export async function DELETE(_req: NextRequest, {params}: { params: { habitId: string } }) {
+export async function DELETE(
+    req: NextRequest,
+    { params }: { params: Promise<{ habitId: string }> }
+) {
+    const { habitId } = await params;
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
-        return NextResponse.json({error: "Unauthorized"}, {status: 401});
-    }
-
-    const user = await User.findOne({email: session.user.email});
-    if (!user) {
-        return NextResponse.json({error: "User not found"}, {status: 404});
-    }
+    const { user, response } = await getUserFromSession(session);
+    if (!user) return response!;
 
     user.habits = user.habits.filter(
-        (h: IHabit) => h._id.toString() !== params.habitId
+        (h: IHabit) => h._id.toString() !== habitId
     );
     await user.save();
 
-    return NextResponse.json({habits: user.habits});
+    return NextResponse.json({ habits: user.habits });
 }

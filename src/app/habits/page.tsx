@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { format, parseISO } from "date-fns";
+import {useEffect, useState} from "react";
+import {format, parseISO} from "date-fns";
 import HabitModal from "@/app/components/habits/HabitModal";
 import HabitSidebar from "@/app/components/habits/HabitSidebar";
 import HabitCalendar from "@/app/components/habits/HabitCalendar";
 import Button from "@/app/components/buttons/Button";
-import { Plus } from "lucide-react";
+import {Plus} from "lucide-react";
 import ConfirmModal from "@/app/components/habits/ConfirmModal";
 import {IHabit} from "@/models/User";
+import toast from "react-hot-toast";
 
 // Monday-first weekday labels
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -57,7 +58,7 @@ export default function MultiHabitDotCalendar() {
     const handleAddHabit = async (habit: { name: string; color: string }) => {
         const res = await fetch("/api/habits", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(habit),
         });
 
@@ -70,9 +71,10 @@ export default function MultiHabitDotCalendar() {
                     id: h._id.toString(),
                 }))
             );
+            toast.success("Habit added!");
         } else {
             const error = await res.json();
-            alert(error.error || "Failed to add habit");
+            toast.error(error.error || "Failed to add habit");
         }
     };
 
@@ -93,9 +95,10 @@ export default function MultiHabitDotCalendar() {
                     id: h._id.toString(),
                 }))
             );
+            toast.success("Habit updated!");
         } else {
             const error = await res.json();
-            alert(error.error || "Failed to edit habit");
+            toast.error(error.error || "Failed to edit habit");
         }
     };
 
@@ -115,9 +118,10 @@ export default function MultiHabitDotCalendar() {
                     id: h._id.toString(),
                 }))
             );
+            toast.success("Habit removed!");
         } else {
             const error = await res.json();
-            alert(error.error || "Failed to remove habit");
+            toast.error(error.error || "Failed to remove habit");
         }
     };
 
@@ -139,10 +143,10 @@ export default function MultiHabitDotCalendar() {
                         : habit
                 )
             );
+            toast.success("Habit updated!");
         } else {
-            // Optionally handle error
             const error = await res.json();
-            alert(error.error || "Failed to update habit");
+            toast.error(error.error || "Failed to update habit");
         }
     };
 
