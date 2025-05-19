@@ -19,7 +19,7 @@ type HabitCalendarProps = {
     };
     monthsToShow: string[];
     WEEKDAYS: string[];
-    onToggle: (habitId: string, date: Date) => void;
+    onToggleAction: (habitId: string, date: Date) => void;
 };
 
 
@@ -27,7 +27,7 @@ export default function HabitCalendar({
                                           habit,
                                           monthsToShow,
                                           WEEKDAYS,
-                                          onToggle,
+                                          onToggleAction,
                                       }: HabitCalendarProps) {
     return (
         <div className="flex-1 overflow-x-auto">
@@ -101,7 +101,7 @@ export default function HabitCalendar({
                                     return (
                                         <button
                                             key={dateStr}
-                                            onClick={() => onToggle(habit.id, day)}
+                                            onClick={() => onToggleAction(habit.id, day)}
                                             className={`
                                                 ${baseCircle}
                                                 w-12 h-12

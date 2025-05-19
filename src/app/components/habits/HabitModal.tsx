@@ -6,8 +6,8 @@ import {getRandomColor} from "@/utils/colorUtils";
 
 type HabitModalProps = {
     open: boolean;
-    onClose: () => void;
-    onSave: (habit: { name: string; color: string }) => void;
+    onCloseAction: () => void;
+    onSaveAction: (habit: { name: string; color: string }) => void;
     initialName?: string;
     initialColor?: string;
     isEditing?: boolean;
@@ -16,8 +16,8 @@ type HabitModalProps = {
 
 export default function HabitModal({
                                        open,
-                                       onClose,
-                                       onSave,
+                                       onCloseAction,
+                                       onSaveAction,
                                        initialName = "",
                                        initialColor = "#7C05F2",
                                        isEditing = false,
@@ -40,7 +40,7 @@ export default function HabitModal({
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-            onClick={onClose} // <-- close on background click
+            onClick={onCloseAction} // <-- close on background click
         >
             <div
                 className="bg-[var(--accent)] rounded-lg shadow-lg p-6 w-full max-w-xs relative"
@@ -48,7 +48,7 @@ export default function HabitModal({
             >
                 <button
                     className="absolute top-2 right-2 text-[var(--foreground)] hover:text-[var(--pink)] text-3xl cursor-pointer"
-                    onClick={onClose}
+                    onClick={onCloseAction}
                     aria-label="Close"
                 >
                     ×
@@ -60,7 +60,7 @@ export default function HabitModal({
                     onSubmit={e => {
                         e.preventDefault();
                         if (name.trim()) {
-                            onSave({ name: name.trim(), color });
+                            onSaveAction({ name: name.trim(), color });
                         }
                     }}
                 >

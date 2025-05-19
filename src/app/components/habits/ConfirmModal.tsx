@@ -3,15 +3,15 @@ import React from "react";
 
 type ConfirmModalProps = {
     open: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
+    onCloseAction: () => void;
+    onConfirmAction: () => void;
     message?: string;
 };
 
 export default function ConfirmModal({
                                          open,
-                                         onClose,
-                                         onConfirm,
+                                         onCloseAction,
+                                         onConfirmAction,
                                          message = "Are you sure?",
                                      }: ConfirmModalProps) {
     if (!open) return null;
@@ -19,7 +19,7 @@ export default function ConfirmModal({
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-            onClick={onClose}
+            onClick={onCloseAction}
         >
             <div
                 className="bg-[var(--accent)] rounded-lg shadow-lg p-6 w-full max-w-xs relative"
@@ -27,7 +27,7 @@ export default function ConfirmModal({
             >
                 <button
                     className="absolute top-2 right-2 text-[var(--foreground)] hover:text-[var(--pink)] text-3xl cursor-pointer"
-                    onClick={onClose}
+                    onClick={onCloseAction}
                     aria-label="Close"
                 >
                     ×
@@ -36,16 +36,16 @@ export default function ConfirmModal({
                 <p className="mb-6 text-[var(--foreground)]">{message}</p>
                 <div className="flex justify-end gap-2">
                     <button
-                        className="px-4 py-2 rounded bg-[var(--dark)] hover:bg-[var(--purple)] font-semibold  cursor-pointer"
-                        onClick={onClose}
+                        className="px-4 py-2 rounded bg-[var(--dark)] hover:bg-[var(--purple)] font-semibold cursor-pointer"
+                        onClick={onCloseAction}
                     >
                         Cancel
                     </button>
                     <button
                         className="px-4 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition cursor-pointer"
                         onClick={() => {
-                            onConfirm();
-                            onClose();
+                            onConfirmAction();
+                            onCloseAction();
                         }}
                     >
                         Remove

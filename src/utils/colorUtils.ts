@@ -8,7 +8,7 @@ export function getContrastTextColor(hex: string): string {
     return luminance > 0.6 ? "#232222" : "#d9d9d9";
 }
 
+// Generates a random hex color
 export function getRandomColor() {
-    // Generates a random hex color
     return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
 }
