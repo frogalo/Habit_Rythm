@@ -7,3 +7,8 @@ export function getContrastTextColor(hex: string): string {
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     return luminance > 0.6 ? "#232222" : "#d9d9d9";
 }
+
+export function getRandomColor() {
+    // Generates a random hex color
+    return "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0");
+}

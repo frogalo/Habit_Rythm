@@ -71,7 +71,7 @@ export default function HabitCalendar({
                             <div className="grid grid-cols-7 gap-2 w-full">
                                 {paddedDays.map((day, idx) => {
                                     if (!day) {
-                                        return <span key={`empty-${habit.id}-${monthStr}-${idx}`} />;
+                                        return <span key={`empty-${habit.id}-${monthStr}-${idx}`}/>;
                                     }
                                     const dateStr = format(day, "yyyy-MM-dd");
                                     const completed = habit.completions.includes(dateStr);
@@ -81,7 +81,7 @@ export default function HabitCalendar({
                                     let numberColorStyle: React.CSSProperties | undefined = undefined;
                                     let numberColorClass = "text-[var(--dark)]";
                                     if (completed) {
-                                        numberColorStyle = { color: getContrastTextColor(habit.color) };
+                                        numberColorStyle = {color: getContrastTextColor(habit.color)};
                                         numberColorClass = "";
                                     } else if (isPast) {
                                         numberColorClass = "text-gray-400";
@@ -103,15 +103,15 @@ export default function HabitCalendar({
                                             key={dateStr}
                                             onClick={() => onToggle(habit.id, day)}
                                             className={`
-                        ${baseCircle}
-                        w-12 h-12
-                        rounded-lg
-                        border-2
-                        ${completedStyle}
-                        ${ringStyle}
-                        mx-auto
-                        relative
-                      `}
+                                                ${baseCircle}
+                                                w-12 h-12
+                                                rounded-lg
+                                                border-2
+                                                ${completedStyle}
+                                                ${ringStyle}
+                                                mx-auto
+                                                relative
+                                              `}
                                             style={{
                                                 borderColor: completed ? habit.color : undefined,
                                                 background: completed ? habit.color : undefined,
@@ -119,20 +119,20 @@ export default function HabitCalendar({
                                             }}
                                             title={dateStr}
                                         >
-                      <span
-                          style={numberColorStyle}
-                          className={`
-                          ${numberColorClass}
-                          text-xs
-                          absolute
-                          bottom-1
-                          right-1
-                          font-semibold
-                          pointer-events-none
-                        `}
-                      >
-                        {day.getDate()}
-                      </span>
+                                              <span
+                                                  style={numberColorStyle}
+                                                  className={`
+                                                  ${numberColorClass}
+                                                  text-xs
+                                                  absolute
+                                                  bottom-1
+                                                  right-1
+                                                  font-semibold
+                                                  pointer-events-none
+                                                `}
+                                              >
+                                                {day.getDate()}
+                                              </span>
                                         </button>
                                     );
                                 })}

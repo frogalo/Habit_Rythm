@@ -7,6 +7,8 @@ import HabitSidebar from "@/app/components/habits/HabitSidebar";
 import HabitCalendar from "@/app/components/habits/HabitCalendar";
 import Button from "@/app/components/buttons/Button";
 import { Plus } from "lucide-react";
+import ConfirmModal from "@/app/components/habits/ConfirmModal";
+import {IHabit} from "@/models/User";
 
 // Monday-first weekday labels
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -32,6 +34,7 @@ export default function MultiHabitDotCalendar() {
     const [habitStates, setHabitStates] = useState<Habit[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+    const [habitToRemove, setHabitToRemove] = useState<Habit | null>(null);
 
     // Fetch habits from API on mount
     useEffect(() => {
@@ -40,10 +43,10 @@ export default function MultiHabitDotCalendar() {
             if (res.ok) {
                 const data = await res.json();
                 setHabitStates(
-                    data.habits.map((h: any) => ({
+                    data.habits.map((h: IHabit) => ({
                         ...h,
-                        _id: typeof h._id === "string" ? h._id : h._id.toString(),
-                        id: typeof h._id === "string" ? h._id : h._id.toString(),
+                        _id: h._id.toString(),
+                        id: h._id.toString(),
                     }))
                 );
             }
@@ -61,10 +64,10 @@ export default function MultiHabitDotCalendar() {
         if (res.ok) {
             const data = await res.json();
             setHabitStates(
-                data.habits.map((h: any) => ({
+                data.habits.map((h: IHabit) => ({
                     ...h,
-                    _id: typeof h._id === "string" ? h._id : h._id.toString(),
-                    id: typeof h._id === "string" ? h._id : h._id.toString(),
+                    _id: h._id.toString(),
+                    id: h._id.toString(),
                 }))
             );
         } else {
@@ -73,26 +76,74 @@ export default function MultiHabitDotCalendar() {
         }
     };
 
+    const handleEditHabit = async (habit: { name: string; color: string }) => {
+        if (!editingHabit) return;
+        const res = await fetch(`/api/habits/${editingHabit.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(habit),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            setHabitStates(
+                data.habits.map((h: IHabit) => ({
+                    ...h,
+                    _id: h._id.toString(),
+                    id: h._id.toString(),
+                }))
+            );
+        } else {
+            const error = await res.json();
+            alert(error.error || "Failed to edit habit");
+        }
+    };
+
+
     // Remove a habit (local only, for now)
-    const handleRemoveHabit = (habitId: string) => {
-        setHabitStates((prev) => prev.filter((h) => h.id !== habitId));
+    const handleRemoveHabit = async (habitId: string) => {
+        const res = await fetch(`/api/habits/${habitId}`, {
+            method: "DELETE",
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            setHabitStates(
+                data.habits.map((h: IHabit) => ({
+                    ...h,
+                    _id: h._id.toString(),
+                    id: h._id.toString(),
+                }))
+            );
+        } else {
+            const error = await res.json();
+            alert(error.error || "Failed to remove habit");
+        }
     };
 
     // Toggle completion for a date (local only, for now)
-    const handleToggle = (habitId: string, date: Date) => {
+    const handleToggle = async (habitId: string, date: Date) => {
         const dateStr = format(date, "yyyy-MM-dd");
-        setHabitStates((prev) =>
-            prev.map((habit) =>
-                habit.id === habitId
-                    ? {
-                        ...habit,
-                        completions: habit.completions.includes(dateStr)
-                            ? habit.completions.filter((d) => d !== dateStr)
-                            : [...habit.completions, dateStr],
-                    }
-                    : habit
-            )
-        );
+        const res = await fetch(`/api/habits/${habitId}/toggle`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ date: dateStr }),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            setHabitStates((prev) =>
+                prev.map((habit) =>
+                    habit.id === habitId
+                        ? { ...habit, completions: data.completions }
+                        : habit
+                )
+            );
+        } else {
+            // Optionally handle error
+            const error = await res.json();
+            alert(error.error || "Failed to update habit");
+        }
     };
 
     return (
@@ -107,6 +158,15 @@ export default function MultiHabitDotCalendar() {
                 className="w-[150px]"
                 type="button"
             />
+            <ConfirmModal
+                open={!!habitToRemove}
+                onClose={() => setHabitToRemove(null)}
+                onConfirm={() => {
+                    if (habitToRemove) handleRemoveHabit(habitToRemove.id);
+                    setHabitToRemove(null);
+                }}
+                message={`Are you sure you want to remove "${habitToRemove?.name}"?`}
+            />
             <HabitModal
                 open={modalOpen}
                 onClose={() => {
@@ -115,7 +175,7 @@ export default function MultiHabitDotCalendar() {
                 }}
                 onSave={async (habit) => {
                     if (editingHabit) {
-                        // handleEditHabit(habit); // (implement edit via API if needed)
+                        await handleEditHabit(habit);
                     } else {
                         await handleAddHabit(habit);
                     }
@@ -144,7 +204,7 @@ export default function MultiHabitDotCalendar() {
                                 setEditingHabit(habit);
                                 setModalOpen(true);
                             }}
-                            onRemove={() => handleRemoveHabit(habit.id)}
+                            onRemove={() => setHabitToRemove(habit)}
                         />
                         <HabitCalendar
                             habit={habit}

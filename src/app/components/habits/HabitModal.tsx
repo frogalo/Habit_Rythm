@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
+import {getRandomColor} from "@/utils/colorUtils";
 
 type HabitModalProps = {
     open: boolean;
@@ -11,6 +12,7 @@ type HabitModalProps = {
     initialColor?: string;
     isEditing?: boolean;
 };
+
 
 export default function HabitModal({
                                        open,
@@ -26,8 +28,12 @@ export default function HabitModal({
     // Reset fields when modal opens/closes or when editing a different habit
     useEffect(() => {
         setName(initialName);
-        setColor(initialColor);
-    }, [open, initialName, initialColor]);
+        if (isEditing) {
+            setColor(initialColor);
+        } else {
+            setColor(getRandomColor());
+        }
+    }, [open, initialName, initialColor, isEditing]);
 
     if (!open) return null;
 
