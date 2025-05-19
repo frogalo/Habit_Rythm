@@ -17,7 +17,7 @@ export default function HabitSidebar({ habit, onEdit, onRemove }: HabitSidebarPr
     return (
         <div className="flex flex-col items-center min-w-[40px] mt-3 mr-6 h-[330px] justify-between">
       <span
-          className="font-bold text-md px-2 py-1 rounded border"
+          className="truncate font-bold text-md px-2 py-1 rounded border max-h-3/5"
           style={{
               writingMode: "vertical-rl",
               transform: "rotate(180deg)",

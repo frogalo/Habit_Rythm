@@ -174,7 +174,7 @@ export default function MultiHabitDotCalendar() {
                         setHabitToRemove(null);
                     }
                 }}
-                message={`Are you sure you want to remove "${habitToRemove?.name}"?`}
+                message={`Are you sure you want to remove this habit?`}
             />
             <HabitModal
                 open={modalOpen}
