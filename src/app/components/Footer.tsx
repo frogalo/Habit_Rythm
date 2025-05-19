@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Button from "@/app/components/buttons/Button";
+import Link from "next/link";
 
 export default function Footer() {
     return (
@@ -9,7 +10,7 @@ export default function Footer() {
             <div className="mx-auto px-6 h-14 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div
                     className="flex items-center gap-2 text-[var(--dark)]"
-                    style={{fontFamily: "var(--font-main)"}}
+                    style={{ fontFamily: "var(--font-main)" }}
                 >
                     <Image
                         src="/logo.png"
@@ -30,14 +31,16 @@ export default function Footer() {
                         rel="noopener noreferrer"
                         className="inline-block"
                     >
-                        <Button
-                            text="GitHub"
-                        />
+                        <Button text="GitHub" />
                     </a>
+                    <Link href="/terms" className="inline-block">
+                        <Button text="Terms" />
+                    </Link>
+                    <Link href="/privacy" className="inline-block">
+                        <Button text="Privacy" />
+                    </Link>
                     <a href="mailto:support@habitrhythm.com" className="inline-block">
-                        <Button
-                            text="Contact"
-                        />
+                        <Button text="Contact" />
                     </a>
                 </div>
             </div>

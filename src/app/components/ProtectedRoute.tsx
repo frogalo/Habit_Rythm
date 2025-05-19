@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const PUBLIC_PATHS = ["/", "/login"];
+const PUBLIC_PATHS = ["/", "/login", "/terms", "/privacy","_next/image?url=/logo.png&w=32&q=75"];
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const { status } = useSession();
