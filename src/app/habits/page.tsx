@@ -159,7 +159,7 @@ export default function MultiHabitDotCalendar() {
                     setEditingHabit(null);
                     setModalOpen(true);
                 }}
-                className="w-[150px]"
+                className="w-[160px]"
                 type="button"
             />
             <ConfirmModal
@@ -205,22 +205,26 @@ export default function MultiHabitDotCalendar() {
                 return (
                     <div
                         key={habit.id}
-                        className="flex flex-row items-stretch w-full bg-white/80 rounded-lg shadow-2xl p-4 mt-2"
+                        className="flex flex-col md:flex-row items-stretch w-full bg-white/80 rounded-lg shadow-2xl p-4 mt-2"
                     >
-                        <HabitSidebar
-                            habit={habit}
-                            onEdit={() => {
-                                setEditingHabit(habit);
-                                setModalOpen(true);
-                            }}
-                            onRemove={() => setHabitToRemove(habit)}
-                        />
-                        <HabitCalendar
-                            habit={habit}
-                            monthsToShow={monthsToShow}
-                            WEEKDAYS={WEEKDAYS}
-                            onToggleAction={handleToggle}
-                        />
+                        <div className="flex-shrink-0">
+                            <HabitSidebar
+                                habit={habit}
+                                onEdit={() => {
+                                    setEditingHabit(habit);
+                                    setModalOpen(true);
+                                }}
+                                onRemove={() => setHabitToRemove(habit)}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <HabitCalendar
+                                habit={habit}
+                                monthsToShow={monthsToShow}
+                                WEEKDAYS={WEEKDAYS}
+                                onToggleAction={handleToggle}
+                            />
+                        </div>
                     </div>
                 );
             })}

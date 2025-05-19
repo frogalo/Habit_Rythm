@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Trash2 } from "lucide-react";
+import {Pencil, Trash2} from "lucide-react";
 import {getContrastTextColor} from "@/utils/colorUtils";
 
 type HabitSidebarProps = {
@@ -12,27 +12,36 @@ type HabitSidebarProps = {
     onRemove?: () => void;
 };
 
-
-export default function HabitSidebar({ habit, onEdit, onRemove }: HabitSidebarProps) {
+export default function HabitSidebar({habit, onEdit, onRemove}: HabitSidebarProps) {
     return (
-        <div className="flex flex-col items-center min-w-[40px] mt-3 mr-6 h-[330px] justify-between">
+        <div
+            className="
+        flex flex-row md:flex-col
+        items-center
+        mt-3 mr-6
+        md:[mt-0]
+        h-[50px] md:h-[330px]
+        w-full md:w-[40px]
+        justify-between
+      "
+        >
       <span
-          className="truncate font-bold text-md px-2 py-1 rounded border max-h-3/5"
+          className={`
+          truncate font-bold text-md px-2 py-1 rounded border max-h-3/5
+          md:[writing-mode:vertical-rl] md:[transform:rotate(180deg)]
+        `}
           style={{
-              writingMode: "vertical-rl",
-              transform: "rotate(180deg)",
               background: habit.color,
               borderColor: habit.color,
               color: getContrastTextColor(habit.color),
               fontFamily: "var(--font-main)",
               textAlign: "center",
-              minHeight: "120px",
               display: "inline-block",
           }}
       >
         {habit.name}
       </span>
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-row md:flex-col items-center gap-2">
                 <button
                     type="button"
                     className="rounded border flex items-center justify-center"

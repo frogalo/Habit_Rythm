@@ -20,44 +20,62 @@ export default function Header() {
                     className="flex items-center gap-3 text-2xl font-bold text-[var(--purple)]"
                     style={{ fontFamily: "var(--font-main)" }}
                 >
-          <span>
-            <Image
-                src="/logo.png"
-                alt="Habit Rhythm Logo"
-                width={58}
-                height={58}
-                className="object-contain"
-                priority
-            />
-          </span>
-                    Habit Rhythm
+                  <span>
+                    <Image
+                        src="/logo.png"
+                        alt="Habit Rhythm Logo"
+                        width={58}
+                        height={58}
+                        className="object-contain"
+                        priority
+                    />
+                  </span>
+                    <span className="hidden md:inline">Habit Rhythm</span>
                 </Link>
                 <div className="flex items-center gap-4">
                     {status === "loading" ? null : session ? (
                         <>
-              <span
-                  className="text-[var(--dark)] font-medium"
-                  style={{ fontFamily: "var(--font-main)" }}
-              >
-                {session.user?.email}
-              </span>
+                      <span
+                          className="hidden md:inline text-[var(--dark)] font-medium"
+                          style={{ fontFamily: "var(--font-main)" }}
+                      >
+                        {session.user?.email}
+                      </span>
                             <Link href="/habits" className="inline-block">
                                 <Button text="Tracker" />
                             </Link>
+                            {/* Sign out: icon only on mobile, icon+text on desktop */}
+                            <Button
+                                text=""
+                                icon={LogOut}
+                                onClick={() => signOut({ callbackUrl: "/login" })}
+                                className="md:hidden"
+                            />
                             <Button
                                 text="Sign out"
                                 icon={LogOut}
                                 onClick={() => signOut({ callbackUrl: "/login" })}
+                                className="hidden md:inline-flex"
                             />
                         </>
                     ) : (
                         <>
                             {pathname !== "/login" && (
-                                <Button
-                                    text="Login"
-                                    icon={LogIn}
-                                    onClick={() => router.push("/login")}
-                                />
+                                <>
+                                    {/* Login: icon only on mobile, icon+text on desktop */}
+                                    <Button
+                                        text=""
+                                        icon={LogIn}
+                                        onClick={() => router.push("/login")}
+                                        className="md:hidden"
+                                    />
+                                    <Button
+                                        text="Login"
+                                        icon={LogIn}
+                                        onClick={() => router.push("/login")}
+                                        className="hidden md:inline-flex"
+                                    />
+                                </>
                             )}
                         </>
                     )}
