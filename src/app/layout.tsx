@@ -4,17 +4,18 @@ import SessionProviderWrapper from "./providers/SessionProviderWrapper";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
-import {Toaster} from "react-hot-toast";
-
-export const metadata = {
-    other: {
-        "google-site-verification": "KaisRoEJqSZ2drlU_iQV9cYD062MUsvzAHHrVhGfGQo",
-    },
-};
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
+        <head>
+            <title>Habit rythm</title>
+            <meta
+                name="google-site-verification"
+                content="KaisRoEJqSZ2drlU_iQV9cYD062MUsvzAHHrVhGfGQo"
+            />
+        </head>
         <body>
         <SessionProviderWrapper>
             <ProtectedRoute>
