@@ -6,6 +6,12 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
 import {Toaster} from "react-hot-toast";
 
+export const metadata = {
+    other: {
+        "google-site-verification": "KaisRoEJqSZ2drlU_iQV9cYD062MUsvzAHHrVhGfGQo",
+    },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
