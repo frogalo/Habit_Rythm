@@ -1,13 +1,13 @@
 version: "3.8"
 services:
-  mongo:
-    image: mongo:6
-    container_name: mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
+#  mongo:
+#    image: mongo:6
+#    container_name: mongodb-secure
+#    restart: always
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - mongo-data:/data/db
 
   app:
     build: .
