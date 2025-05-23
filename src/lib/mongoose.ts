@@ -8,7 +8,17 @@ if (!MONGODB_URI) {
 }
 
 export async function dbConnect() {
-    if (mongoose.connection.readyState >= 1) return;
+    if (mongoose.connection.readyState >= 1) {
+        console.log("MongoDB is already connected.");
+        return;
+    }
 
-    return mongoose.connect(MONGODB_URI)
+    try {
+        await mongoose.connect(MONGODB_URI);
+
+        console.log("MongoDB connection established successfully.");
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        throw error;
+    }
 }
