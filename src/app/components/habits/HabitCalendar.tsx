@@ -9,7 +9,8 @@ import {
     parseISO,
     getDay,
 } from "date-fns";
-import {getContrastTextColor} from "@/utils/colorUtils";
+import { getContrastTextColor } from "@/utils/colorUtils";
+import { useRef, useEffect } from "react";
 
 type HabitCalendarProps = {
     habit: {
@@ -22,16 +23,27 @@ type HabitCalendarProps = {
     onToggleAction: (habitId: string, date: Date) => void;
 };
 
-
 export default function HabitCalendar({
                                           habit,
                                           monthsToShow,
                                           WEEKDAYS,
                                           onToggleAction,
                                       }: HabitCalendarProps) {
+    const currentMonthRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (currentMonthRef.current) {
+            currentMonthRef.current.scrollIntoView({
+                behavior: "smooth",
+                inline: "center",
+                block: "nearest",
+            });
+        }
+    }, []);
+
     return (
         <div className="flex-1 overflow-x-auto">
-            <div className="flex flex-row gap-6 min-w-[380px]">
+            <div className="flex flex-row gap-4 sm:gap-6 min-w-[240px] sm:min-w-[400px]">
                 {monthsToShow.map((monthStr) => {
                     const monthDate = parseISO(monthStr + "-01");
                     const days = eachDayOfInterval({
@@ -47,31 +59,35 @@ export default function HabitCalendar({
                         ...days,
                     ];
 
+                    const isCurrentMonth =
+                        monthStr === format(new Date(), "yyyy-MM");
+
                     return (
                         <div
                             key={monthStr}
-                            className="flex flex-col min-w-[380px] w-[380px] rounded-lg p-3 h-full"
+                            ref={isCurrentMonth ? currentMonthRef : undefined}
+                            className="flex flex-col min-w-[380px] w-[300px] sm:min-w-[380px] sm:w-[380px] rounded-lg p-2 sm:p-3 h-full"
                         >
-              <span
-                  className="font-bold text-sm px-3 py-1 mb-2 rounded w-fit"
-                  style={{
-                      background: "var(--secondary)",
-                      color: "var(--foreground)",
-                  }}
-              >
-                {format(monthDate, "MMMM yyyy")}
-              </span>
+                            <span
+                                className="font-bold text-xs sm:text-sm px-2 sm:px-3 py-1 mb-2 rounded w-fit"
+                                style={{
+                                    background: "var(--secondary)",
+                                    color: "var(--foreground)",
+                                }}
+                            >
+                                {format(monthDate, "MMMM yyyy")}
+                            </span>
                             {/* Weekday Labels */}
-                            <div className="grid grid-cols-7 gap-2 mb-1 text-xs text-center text-gray-400 w-full">
+                            <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-1 text-[10px] sm:text-xs text-center text-gray-400 w-full">
                                 {WEEKDAYS.map((d, i) => (
                                     <span key={`${habit.id}-${monthStr}-weekday-${i}`}>{d}</span>
                                 ))}
                             </div>
                             {/* Dot Calendar */}
-                            <div className="grid grid-cols-7 gap-2 w-full">
+                            <div className="grid grid-cols-7 gap-1 sm:gap-3 w-full">
                                 {paddedDays.map((day, idx) => {
                                     if (!day) {
-                                        return <span key={`empty-${habit.id}-${monthStr}-${idx}`}/>;
+                                        return <span key={`empty-${habit.id}-${monthStr}-${idx}`} />;
                                     }
                                     const dateStr = format(day, "yyyy-MM-dd");
                                     const completed = habit.completions.includes(dateStr);
@@ -81,7 +97,7 @@ export default function HabitCalendar({
                                     let numberColorStyle: React.CSSProperties | undefined = undefined;
                                     let numberColorClass = "text-[var(--dark)]";
                                     if (completed) {
-                                        numberColorStyle = {color: getContrastTextColor(habit.color)};
+                                        numberColorStyle = { color: getContrastTextColor(habit.color) };
                                         numberColorClass = "";
                                     } else if (isPast) {
                                         numberColorClass = "text-gray-400";
@@ -104,7 +120,7 @@ export default function HabitCalendar({
                                             onClick={() => onToggleAction(habit.id, day)}
                                             className={`
                                                 ${baseCircle}
-                                                w-12 h-12
+                                                w-10 h-10 sm:w-12 sm:h-12
                                                 rounded-lg
                                                 border-2
                                                 ${completedStyle}
@@ -119,20 +135,20 @@ export default function HabitCalendar({
                                             }}
                                             title={dateStr}
                                         >
-                                              <span
-                                                  style={numberColorStyle}
-                                                  className={`
+                                            <span
+                                                style={numberColorStyle}
+                                                className={`
                                                   ${numberColorClass}
-                                                  text-xs
+                                                  text-[10px] sm:text-xs
                                                   absolute
                                                   bottom-1
                                                   right-1
                                                   font-semibold
                                                   pointer-events-none
                                                 `}
-                                              >
+                                            >
                                                 {day.getDate()}
-                                              </span>
+                                            </span>
                                         </button>
                                     );
                                 })}
