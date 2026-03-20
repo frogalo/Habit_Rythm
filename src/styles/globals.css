@@ -1,32 +1,113 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,401;1,401&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap');
 
 @import 'tailwindcss';
 
+/* ─── Design System Tokens: The Living Chronology ─── */
 :root {
-  --pink:   #e31287;
-  --purple: #8719ca;
-  --blue:   #1c2fce;
-  --orange: #f59811;
-  --foreground: #F2F2F2;
-  --primary: #A3BFD9;
-  --secondary: #6F9ABF;
-  --accent: #283D59;
-  --dark: #262626;
-  --font-main: "Montserrat", sans-serif;
+  /* Surface layers */
+  --background:                #fcf9f4;
+  --surface:                   #fcf9f4;
+  --surface-container-lowest:  #ffffff;
+  --surface-container-low:     #f6f3ee;
+  --surface-container:         #f0ede8;
+  --surface-container-high:    #ebe8e3;
+  --surface-container-highest: #e5e2dd;
+  --surface-dim:               #dcdad5;
+  --surface-bright:            #fcf9f4;
+
+  /* Primary — Clay */
+  --primary:            #794124;
+  --primary-container:  #965839;
+  --on-primary:         #ffffff;
+  --on-primary-container: #ffe1d5;
+  --primary-fixed:      #ffdbcc;
+  --primary-fixed-dim:  #ffb693;
+  --inverse-primary:    #ffb693;
+
+  /* Secondary — Moss */
+  --secondary:           #5c614c;
+  --secondary-container: #dee2c8;
+  --on-secondary:        #ffffff;
+  --on-secondary-container: #606550;
+  --secondary-fixed:     #e0e5cb;
+  --secondary-fixed-dim: #c4c9b0;
+
+  /* Tertiary — Sunrise */
+  --tertiary:           #86371c;
+  --tertiary-container: #a54e32;
+  --on-tertiary:        #ffffff;
+  --on-tertiary-container: #ffe1d8;
+  --tertiary-fixed:     #ffdbd0;
+  --tertiary-fixed-dim: #ffb59e;
+
+  /* On-surface */
+  --on-surface:         #1c1c19;
+  --on-surface-variant: #54433c;
+  --on-background:      #1c1c19;
+  --inverse-on-surface: #f3f0eb;
+  --inverse-surface:    #31302d;
+
+  /* Outlines */
+  --outline:         #87736b;
+  --outline-variant: #dac1b8;
+
+  /* Error */
+  --error:              #ba1a1a;
+  --error-container:    #ffdad6;
+  --on-error:           #ffffff;
+  --on-error-container: #93000a;
+
+  /* Surface tint */
+  --surface-tint:    #8b4f31;
+  --surface-variant: #e5e2dd;
+
+  /* ─── Typography ─── */
+  --font-headline: "Newsreader", serif;
+  --font-body:     "Manrope", sans-serif;
+
+  /* ─── Editorial shadow ─── */
+  --editorial-shadow: 0 10px 40px -10px rgba(121, 65, 36, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #A3BFD9;
-    --foreground: #F2F2F2;
-  }
+/* ─── Base ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-main), Arial, Helvetica, sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 401;
-  font-style: normal;
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--primary-fixed);
+  color: #351000;
+}
+
+/* ─── Grain overlay (applied via a pseudo on a wrapper if needed) ─── */
+.grain-texture {
+  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBWS2d0MCRInP1VdhROHR85JaYBMEhV0wHA6j601xzC-tAWLxYNMCQZjibi81l-gpzjk0a3dr3zOuO_bd5kV0pPMhyjdR5Bi_1g5_14npSv7ipZxnXoov5PFV0rBgyfYypBteqil2XME8Nerjyp_9X6XIPG6NmEDnT93lld1mSqI_t6vrAAB80N50YD_nDxuRfAf9Y1C1lNFL91mXFNV4i5DZL81Q5ZJ_2S9oElRoN2VebSQWgeOuFMXf6WZjesdCHwKUQ3Rdpga5_R");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.editorial-shadow {
+  box-shadow: var(--editorial-shadow);
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
 }

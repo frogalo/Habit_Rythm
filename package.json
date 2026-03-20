@@ -6,14 +6,16 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "^6.18.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.11.0",
     "lucide-react": "^0.510.0",
-    "mongodb": "^6.16.0",
-    "mongoose": "^8.14.3",
     "next": "^15.3.2",
     "next-auth": "^4.24.11",
     "react": "^19.1.0",
@@ -31,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "postcss": "^8.5.3",
+    "prisma": "^6.18.0",
     "tailwindcss": "^4.1.6",
     "typescript": "^5"
   }

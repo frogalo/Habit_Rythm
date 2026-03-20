@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { LogOut, LogIn } from "lucide-react";
-import Button from "@/app/components/buttons/Button";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function Header() {
@@ -13,71 +12,95 @@ export default function Header() {
     const pathname = usePathname();
 
     return (
-        <header className="w-full bg-[var(--secondary)]/80 backdrop-blur sticky top-0 z-30 border-b border-[var(--accent)]">
-            <nav className="mx-auto flex items-center justify-between px-6 h-16">
-                <Link
-                    href="/"
-                    className="flex items-center gap-3 text-2xl font-bold text-[var(--purple)]"
-                    style={{ fontFamily: "var(--font-main)" }}
-                >
-                  <span>
+        <header
+            style={{
+                background: "rgba(252,249,244,0.92)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                borderBottom: "1px solid rgba(218,193,184,0.15)",
+            }}
+            className="w-full sticky top-0 z-30"
+        >
+            <nav className="mx-auto flex items-center justify-between px-6 h-16 max-w-7xl">
+                {/* Brand */}
+                <Link href="/" className="flex items-center gap-3">
                     <Image
                         src="/logo.png"
                         alt="Habit Rhythm Logo"
-                        width={58}
-                        height={58}
+                        width={36}
+                        height={36}
                         className="object-contain"
                         priority
                     />
-                  </span>
-                    <span className="hidden md:inline">Habit Rhythm</span>
+                    <span
+                        style={{
+                            color: "var(--primary)",
+                            fontFamily: "var(--font-headline)",
+                        }}
+                        className="italic text-xl hidden md:inline"
+                    >
+                        Habit Rhythm
+                    </span>
                 </Link>
-                <div className="flex items-center gap-4">
+
+                {/* Right actions */}
+                <div className="flex items-center gap-3">
                     {status === "loading" ? null : session ? (
                         <>
-                      <span
-                          className="hidden md:inline text-[var(--dark)] font-medium"
-                          style={{ fontFamily: "var(--font-main)" }}
-                      >
-                        {session.user?.email}
-                      </span>
-                            <Link href="/habits" className="inline-block">
-                                <Button text="Tracker" />
+                            <span
+                                style={{
+                                    color: "var(--on-surface-variant)",
+                                    fontFamily: "var(--font-body)",
+                                }}
+                                className="hidden md:inline text-sm"
+                            >
+                                {session.user?.email}
+                            </span>
+
+                            <Link href="/habits">
+                                <button
+                                    style={{
+                                        background: "var(--surface-container)",
+                                        color: "var(--primary)",
+                                        fontFamily: "var(--font-body)",
+                                        borderRadius: "999px",
+                                        border: "1px solid rgba(218,193,184,0.3)",
+                                    }}
+                                    className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity cursor-pointer"
+                                >
+                                    Tracker
+                                </button>
                             </Link>
-                            {/* Sign out: icon only on mobile, icon+text on desktop */}
-                            <Button
-                                text=""
-                                icon={LogOut}
+
+                            <button
                                 onClick={() => signOut({ callbackUrl: "/login" })}
-                                className="md:hidden"
-                            />
-                            <Button
-                                text="Sign out"
-                                icon={LogOut}
-                                onClick={() => signOut({ callbackUrl: "/login" })}
-                                className="hidden md:inline-flex"
-                            />
+                                style={{
+                                    color: "var(--on-surface-variant)",
+                                    fontFamily: "var(--font-body)",
+                                }}
+                                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest hover:opacity-70 transition-opacity cursor-pointer"
+                                title="Sign out"
+                            >
+                                <LogOut size={14} />
+                                <span className="hidden md:inline">Sign out</span>
+                            </button>
                         </>
                     ) : (
-                        <>
-                            {pathname !== "/login" && (
-                                <>
-                                    {/* Login: icon only on mobile, icon+text on desktop */}
-                                    <Button
-                                        text=""
-                                        icon={LogIn}
-                                        onClick={() => router.push("/login")}
-                                        className="md:hidden"
-                                    />
-                                    <Button
-                                        text="Login"
-                                        icon={LogIn}
-                                        onClick={() => router.push("/login")}
-                                        className="hidden md:inline-flex"
-                                    />
-                                </>
-                            )}
-                        </>
+                        pathname !== "/login" && (
+                            <button
+                                onClick={() => router.push("/login")}
+                                style={{
+                                    background: "var(--primary)",
+                                    color: "var(--on-primary)",
+                                    fontFamily: "var(--font-body)",
+                                    borderRadius: "999px",
+                                }}
+                                className="flex items-center gap-2 px-5 py-2 text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform editorial-shadow cursor-pointer"
+                            >
+                                <LogIn size={14} />
+                                <span>Login</span>
+                            </button>
+                        )
                     )}
                 </div>
             </nav>

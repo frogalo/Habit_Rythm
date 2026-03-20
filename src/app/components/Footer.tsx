@@ -1,48 +1,68 @@
 "use client";
 
-import Image from "next/image";
-import Button from "@/app/components/buttons/Button";
 import Link from "next/link";
 
 export default function Footer() {
     return (
-        <footer className="w-full bg-[var(--secondary)] border-t border-[var(--accent)] max-h-14]">
-            <div className="mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                <div
-                    className="flex items-center gap-2 text-[var(--dark)]"
-                    style={{ fontFamily: "var(--font-main)" }}
-                >
-                    <Image
-                        src="/logo.png"
-                        alt="Habit Rhythm Logo"
-                        width={24}
-                        height={24}
-                        className="object-contain"
-                        priority
-                    />
-                    <span className="truncate text-sm">
-                    © {new Date().getFullYear()} Habit Rhythm. All rights reserved.
-                  </span>
-                </div>
-                <div className="flex gap-2 text-sm m-3">
-                    <a
-                        href="https://github.com/frogalo/Habit_Rythm"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block"
+        <footer style={{ background: "var(--surface-container-low)" }}>
+            <div className="mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-6 max-w-7xl">
+                {/* Brand */}
+                <div className="flex flex-col items-center md:items-start gap-1">
+                    <span
+                        style={{ color: "var(--on-surface)", fontFamily: "var(--font-headline)" }}
+                        className="italic text-base"
                     >
-                        <Button text="GitHub" />
-                    </a>
-                    <Link href="/terms" className="inline-block">
-                        <Button text="Terms" />
-                    </Link>
-                    <Link href="/privacy" className="inline-block">
-                        <Button text="Privacy" />
-                    </Link>
-                    <a href="mailto:support@habitrhythm.com" className="inline-block">
-                        <Button text="Contact" />
-                    </a>
+                        Habit Rhythm
+                    </span>
+                    <span
+                        style={{ color: "var(--outline)", fontFamily: "var(--font-body)" }}
+                        className="text-xs tracking-wide"
+                    >
+                        © {new Date().getFullYear()} Habit Rhythm. The Living Chronology.
+                    </span>
                 </div>
+
+                {/* Links */}
+                <nav className="flex gap-6 flex-wrap justify-center">
+                    {[
+                        { label: "GitHub",  href: "https://github.com/frogalo/Habit_Rythm", external: true },
+                        { label: "Terms",   href: "/terms",   external: false },
+                        { label: "Privacy", href: "/privacy", external: false },
+                        { label: "Contact", href: "mailto:support@habitrhythm.com", external: true },
+                    ].map(({ label, href, external }) => (
+                        external ? (
+                            <a
+                                key={label}
+                                href={href}
+                                target={href.startsWith("http") ? "_blank" : undefined}
+                                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                                style={{
+                                    color: "var(--outline)",
+                                    fontFamily: "var(--font-body)",
+                                    textDecoration: "underline",
+                                    textDecorationColor: "var(--outline-variant)",
+                                }}
+                                className="text-xs tracking-wide hover:opacity-70 transition-opacity"
+                            >
+                                {label}
+                            </a>
+                        ) : (
+                            <Link
+                                key={label}
+                                href={href}
+                                style={{
+                                    color: "var(--outline)",
+                                    fontFamily: "var(--font-body)",
+                                    textDecoration: "underline",
+                                    textDecorationColor: "var(--outline-variant)",
+                                }}
+                                className="text-xs tracking-wide hover:opacity-70 transition-opacity"
+                            >
+                                {label}
+                            </Link>
+                        )
+                    ))}
+                </nav>
             </div>
         </footer>
     );

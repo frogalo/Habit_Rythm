@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
+  image         String?
+  provider      String[] @default([])
+  permissions   String[] @default([])
+  githubImage   String?
+  googleImage   String?
+  givenName     String?
+  familyName    String?
+  locale        String?
+  googleProfile Json?
+  login         String?
+  githubId      String?
+  githubProfile Json?
+  habits        Habit[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Habit {
+  id          String            @id @default(cuid())
+  name        String
+  color       String
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completions HabitCompletion[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([userId])
+  @@map("habits")
+}
+
+model HabitCompletion {
+  id        String   @id @default(cuid())
+  date      String
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([habitId, date])
+  @@index([habitId, date])
+  @@map("habit_completions")
+}
